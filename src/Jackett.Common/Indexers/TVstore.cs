@@ -231,27 +231,20 @@ namespace Jackett.Common.Indexers
                     //TODO consider converting to foreach
                     for (var i = 1; i < seriesKnowBySite.Length; i++)
                     {
-                        try
+                        var id = seriesKnowBySite[i];
+                        var seriesElement = WebUtility.HtmlDecode(id).Split(';');
+                        var hungarianName = seriesElement[1].Split('=')[1].Trim('\'').ToLower();
+                        var englishName = seriesElement[2].Split('=')[1].Trim('\'').ToLower();
+                        var seriesId = seriesElement[0].Split('=')[1].Trim('\'');
+                        var imdbId = seriesElement[7].Split('=')[1].Trim('\'');
+                        var seriesDetail = new SeriesDetail
                         {
-                            var id = seriesKnowBySite[i];
-                            var seriesElement = WebUtility.HtmlDecode(id).Split(';');
-                            var hungarianName = seriesElement[1].Split('=')[1].Trim('\'').ToLower();
-                            var englishName = seriesElement[2].Split('=')[1].Trim('\'').ToLower();
-                            var seriesId = seriesElement[0].Split('=')[1].Trim('\'');
-                            var imdbId = seriesElement[7].Split('=')[1].Trim('\'');
-                            var seriesDetail = new SeriesDetail
-                            {
-                                HunName = hungarianName,
-                                EngName = englishName,
-                                id = seriesId,
-                                imdbid = imdbId
-                            };
-                            series.Add(seriesDetail);
-                        }
-                        catch (Exception e) when (!(e is IndexOutOfRangeException))
-                        {
-                            //Supress all others
-                        }
+                            HunName = hungarianName,
+                            EngName = englishName,
+                            id = seriesId,
+                            imdbid = imdbId
+                        };
+                        series.Add(seriesDetail);
                     }
                 }
             }
